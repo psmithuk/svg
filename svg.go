@@ -15,11 +15,20 @@ type SVG struct {
 }
 
 const (
-	svginit = `<?xml version="1.0"?>
-<svg width="%s" height="%s"`
-	svgns = `
-     xmlns="http://www.w3.org/2000/svg" 
-     xmlns:xlink="http://www.w3.org/1999/xlink">`
+	svginit = `<?xml version="1.0" encoding="utf-8"?>
+<!-- Generator:  github.com/psmithuk/svg  -->
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
+<svg
+	version="1.1"
+	id="Layer_1"
+	xmlns="http://www.w3.org/2000/svg"
+	xmlns:xlink="http://www.w3.org/1999/xlink"
+	x="0px" y="0px"
+	width="%dpx" height="%dpx"
+ 	viewBox="0 0 %d %d"
+ 	enable-background="new 0 0 %d %d"
+ 	xml:space="preserve">`
+
 	vbfmt      = `viewBox="%f %f %f %f"`
 	emptyclose = "/>\n"
 )
@@ -41,23 +50,11 @@ func (svg *SVG) printf(format string, a ...interface{}) (n int, errno error) {
 
 // Structure, Metadata, Scripting, Transformation, and Links
 
-// Start begins the SVG document with the width w, height h and unit (pt or px).
+// Start begins the SVG document with the width w and height h
 // Other attributes may be optionally added, for example viewbox or additional namespaces
 // Standard Reference: http://www.w3.org/TR/SVG11/struct.html#SVGElement
-func (svg *SVG) Start(w int, h int, unit string, ns ...string) {
-	ws := fmt.Sprintf("%d%s", w, unit)
-	hs := fmt.Sprintf("%d%s", h, unit)
-
-	svg.printf(svginit, ws, hs)
-	for _, v := range ns {
-		svg.printf("\n     %s", v)
-	}
-	svg.println(svgns)
-}
-
-// Startview begins the SVG document, with the specified width, height, and viewbox
-func (svg *SVG) Startview(w, h int, minx, miny, vw, vh float64) {
-	svg.Start(w, h, fmt.Sprintf(vbfmt, minx, miny, vw, vh))
+func (svg *SVG) Start(w int, h int) {
+	svg.printf(svginit, w, h, w, h, w, h)
 }
 
 // End the SVG document
